@@ -1,8 +1,8 @@
-/*  -------------------------------------------------------  *
- *   NOTE:     		Using wolfssl 4.6.0						 *
- *					./configure  --enable-opensslextra       *
- *   To compile:	gcc -o test getcert.c -lwolfssl -lcrypto *
- *  -------------------------------------------------------  */
+/*  ----------------------------------------------------------------------- *
+ *   NOTE:     		Using wolfssl 4.6.0						 				*
+ *					./configure  --enable-opensslextra --enable-certgen		*
+ *   To compile:	gcc -o test getcert.c -lwolfssl -lcrypto				*
+ *  ----------------------------------------------------------------------- */
 
 /**** IMPORTS ****/
 

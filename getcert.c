@@ -20,6 +20,7 @@
 #include <wolfssl/ssl.h>
 #include <wolfssl/openssl/pem.h>
 #include <wolfssl/openssl/bio.h>
+#include <wolfssl/wolfcrypt/rsa.h>
 
 
 // To create a socket & TCP-connect to server
@@ -33,16 +34,18 @@ int main() {
 	char           		hostname[256];
 	BIO              	*certbio = NULL;
 	BIO               	*outbio = NULL;
-	WOLFSSL_X509        *cert = NULL;
+	WOLFSSL_X509        *servercert = NULL;
 	WOLFSSL_METHOD* 	method;
 	WOLFSSL_CTX* ctx;
 	WOLFSSL* ssl;
 	int server = 0;
 	int ret, i;
+	FILE *fp;
+	struct stat st = {0};
 
 	/* ---------------------------------------------------------- *
-	* Create the Input/Output BIO's.                             *
-	* ---------------------------------------------------------- */
+	 * Create the Input/Output BIO's.                             *
+	 * ---------------------------------------------------------- */
 	certbio = BIO_new(BIO_s_file());
 	outbio  = BIO_new_fp(stdout, BIO_NOCLOSE);
 
@@ -64,7 +67,7 @@ int main() {
 	}
 
 	/* ---------------------------------------------------------- *
-	* Set CTX options   										  *
+	* Set CTX options											  *
 	* ----------------------------------------------------------- */
 	// Disable SSL v2
 	wolfSSL_CTX_set_options(ctx, WOLFSSL_OP_NO_SSLv2);
@@ -92,8 +95,8 @@ int main() {
 	wolfSSL_set_fd(ssl, server);
 
 	/* ---------------------------------------------------------- *
-	* Try to SSL-connect here, returns 1 for success             *
-	* ---------------------------------------------------------- */
+	 * Try to SSL-connect here, returns 1 for success             *
+	 * ---------------------------------------------------------- */
 	if ( wolfSSL_connect(ssl) != 1) {
 		BIO_printf(outbio, "Error: Could not build a SSL session to: %s.\n", dest_url);
 	}
@@ -104,9 +107,9 @@ int main() {
 	/* ---------------------------------------------------------- *
 	 * Get the remote certificate into the X509 structure         *
 	 * ---------------------------------------------------------- */
-	cert = wolfSSL_get_peer_certificate(ssl);
+	servercert = wolfSSL_get_peer_certificate(ssl);
 
-	if(cert == NULL) {
+	if(servercert == NULL) {
 		BIO_printf(outbio, "Error: Could not get a certificate from: %s.\n", dest_url);
 	}
 	else {
@@ -114,11 +117,11 @@ int main() {
 	}
 
 	/* ---------------------------------------------------------- *
-	 * Get certificate values       							  *
+	 * Get certificate values									  *
 	 * ---------------------------------------------------------- */
 
 	// Get public key
-	EVP_PKEY *pkey = X509_get_pubkey(cert);
+	EVP_PKEY *pkey = X509_get_pubkey(servercert);
 
 	// IF PK is RSA
 	RSA * rsa;
@@ -129,6 +132,18 @@ int main() {
   	// Write in PEM format to BIO
 	PEM_write_bio_PUBKEY(outbio, pkey);
 
+	// Create directory path
+	if (stat("./cert", &st) == -1) {
+		// 0777 is permissions of directory
+		mkdir("./cert", 0777);
+	}
+
+    // Store certificate into PEM file
+    strncpy(hostname, strstr(dest_url, "://")+3, sizeof(hostname));
+    sprintf(filename, "cert/%s.PEM", hostname);
+    fp = fopen (filename, "wb");
+	PEM_write_X509(fp, servercert);
+
 	/************ GET M0RE STUFF NEEDED FOR VERIFICATION ************/
 
 	/* ---------------------------------------------------------- *
@@ -136,7 +151,7 @@ int main() {
 	 * ---------------------------------------------------------- */
 	wolfSSL_free(ssl);
 	close(server);
-	wolfSSL_X509_free(cert);
+	wolfSSL_X509_free(servercert);
 	wolfSSL_CTX_free(ctx);
 	wolfSSL_Cleanup();
 
@@ -186,7 +201,7 @@ int create_socket(char url_str[], BIO *out) {
   }
 
   /* ---------------------------------------------------------- *
-   * create TCP socket 			                                *
+   * Create TCP socket 			                                *
    * ---------------------------------------------------------- */
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
 

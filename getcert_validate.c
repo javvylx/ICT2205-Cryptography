@@ -22,6 +22,7 @@
 #include <wolfssl/openssl/bio.h>
 #include <wolfssl/wolfcrypt/rsa.h>
 
+#define CERT_FILE_domain_com "./cert/SectigoRSADVBundle.pem"
 
 // To create a socket & TCP-connect to server
 int create_socket(char[], BIO *);
@@ -29,7 +30,7 @@ int create_socket(char[], BIO *);
 int main() {
 
 	// Host name to retrieve cert from
-	char           		dest_url[] = "https://demo.testfire.net";
+	char           		dest_url[] = "https://domain.com";
 	char           		filename[100];
 	char           		hostname[256];
 	BIO              	*certbio = NULL;
@@ -71,8 +72,15 @@ int main() {
 	* ----------------------------------------------------------- */
 	// Disable SSL v2
 	wolfSSL_CTX_set_options(ctx, WOLFSSL_OP_NO_SSLv2);
-	// Disable verification of server
-	wolfSSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0); 
+
+
+	// Load the relevant CA cert to verify with server
+	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_domain_com, NULL)
+        != SSL_SUCCESS) {
+        fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
+                CERT_FILE_domain_com);
+        return -1;
+    }
 
 	/* ---------------------------------------------------------- *
 	 * Create new wolfSSL connection state object                 *
@@ -96,7 +104,8 @@ int main() {
 
 	/* ---------------------------------------------------------- *
 	 * Try to SSL-connect here, returns 1 for success             *
-	 * ---------------------------------------------------------- */
+	 * ---------------------------------------------------------- */	
+	
 	if ( wolfSSL_connect(ssl) != 1) {
 		BIO_printf(outbio, "Error: Could not build a SSL session to: %s.\n", dest_url);
 	}
@@ -140,7 +149,7 @@ int main() {
 
     // Store certificate into PEM file
     strncpy(hostname, strstr(dest_url, "://")+3, sizeof(hostname));
-    sprintf(filename, "cert/%s.PEM", hostname);
+    sprintf(filename, "cert/%s.pem", hostname);
     fp = fopen (filename, "wb");
 	PEM_write_X509(fp, servercert);
 

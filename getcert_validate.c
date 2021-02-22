@@ -22,7 +22,9 @@
 #include <wolfssl/openssl/bio.h>
 #include <wolfssl/wolfcrypt/rsa.h>
 
-#define CERT_FILE_domain_com "./cert/SectigoRSADVBundle.pem"
+#define CERT_FILE_CA "./cert/USERTrustRSACertificationAuthority.pem"
+#define CERT_FILE_CA2 "./cert/DigiCertGlobalRootCA.pem"
+#define CERT_FILE_CA3 "./cert/AmazonCA.pem"
 
 // To create a socket & TCP-connect to server
 int create_socket(char[], BIO *);
@@ -30,7 +32,7 @@ int create_socket(char[], BIO *);
 int main() {
 
 	// Host name to retrieve cert from
-	char           		dest_url[] = "https://domain.com";
+	char           		dest_url[] = "https://sec-consult.com";
 	char           		filename[100];
 	char           		hostname[256];
 	BIO              	*certbio = NULL;
@@ -72,13 +74,31 @@ int main() {
 	* ----------------------------------------------------------- */
 	// Disable SSL v2
 	wolfSSL_CTX_set_options(ctx, WOLFSSL_OP_NO_SSLv2);
+	
+	// To disale Cert validation
+	// wolfSSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0); 
 
-
-	// Load the relevant CA cert to verify with server
-	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_domain_com, NULL)
+	/* ---------------------------------------------------------- *
+	* Loading in the various CA Certs							  *
+	* ----------------------------------------------------------- */
+	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_CA, NULL)
         != SSL_SUCCESS) {
         fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
-                CERT_FILE_domain_com);
+                CERT_FILE_CA);
+        return -1;
+    }
+
+	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_CA2, NULL)
+        != SSL_SUCCESS) {
+        fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
+                CERT_FILE_CA2);
+        return -1;
+    }
+
+	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_CA3, NULL)
+        != SSL_SUCCESS) {
+        fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
+                CERT_FILE_CA3);
         return -1;
     }
 

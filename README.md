@@ -117,7 +117,7 @@ You may then proceed to interact with the website with 3 options and the respons
    ```
 To exit program, enter 0 until program ends.
 
-## Team Members:
+## Team Members
 
 * 1902125 EUGENE TAN WEI JIE
 * 1902129 JAVIER LIM ZHENG HAO

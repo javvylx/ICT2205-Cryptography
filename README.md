@@ -29,6 +29,7 @@ sudo make install
 ldconfig
 ```
 Compiling the program
+* Please ensure that ```ICT2205_Code.c``` and ```ICT2205_Code.h```are in the same directory
 ```
 gcc ICT2205_Code.c -o testssl -lwolfssl -lcrypto
 ```
@@ -77,7 +78,7 @@ Modulus:
     36:9b
 Exponent: 65537 (0x10001)
 ```
-You may then proceed to interact with the website with 3 options and the response will be saved in /request folder
+You may then proceed to interact with the website with 3 options and the response will be saved as a HTML file under /request folder
 1. Pre-crafted GET request
    ```
    Please choose a number accordingly. Option 1 & 2 are sample requests, to prove the script is working.
@@ -115,9 +116,10 @@ You may then proceed to interact with the website with 3 options and the respons
    ---Sending request---
    ---Receving request (Writing to file)---
    ```
-To exit program, enter 0 until program ends.
+When the SSL/TLS socket is established, enter 0 to end the socket and return to the main menu
+In the main menu, enter 0 to exit the program
 
-## Team Members
+## Team Members (TeamEggFriedRice)
 
 * 1902125 EUGENE TAN WEI JIE
 * 1902129 JAVIER LIM ZHENG HAO

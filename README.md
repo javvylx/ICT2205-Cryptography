@@ -16,10 +16,10 @@ Cryptographic library:
 
 Linux Apt Install:
 ```
-apt update
-apt install autoconf
-apt install automake
-apt install libtool
+sudo apt update
+sudo apt install autoconf
+sudo apt install automake
+sudo apt install libtool
 ```
 
 ### Installing

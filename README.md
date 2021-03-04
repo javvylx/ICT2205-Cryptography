@@ -14,6 +14,14 @@ These instructions will guide you to ensure code is working.
 Cryptographic library: 
 [WolfSSL](https://github.com/wolfSSL/wolfssl/releases) - Version 4.6.0 and above
 
+Linux Apt Install:
+```
+apt update
+apt install autoconf
+apt install automake
+apt install libtool
+```
+
 ### Installing
 Unzip wolfssl-x.x.x-stable.tar.gz into /opt/wolfssl
 ```
@@ -23,6 +31,7 @@ unzip wolfssl-4.6.0-stable.tar.gz -d /opt/wolfssl
 Installing WolfCrypt library
 ```
 cd wolfssl-4.6.0-stable
+./autogen.sh
 ./configure  --enable-opensslextra --enable-certgen
 make
 sudo make install
@@ -30,6 +39,7 @@ ldconfig
 ```
 Compiling the program
 * Please ensure that ```ICT2205_Code.c``` and ```ICT2205_Code.h```are in the same directory
+* '-lcrypto' is not needed if you are running wolfssl 4.6.0 and above
 ```
 gcc ICT2205_Code.c -o testssl -lwolfssl -lcrypto
 ```

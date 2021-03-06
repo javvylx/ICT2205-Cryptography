@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-# ict2205-crypto
-
- *   ./configure  --enable-opensslextra --enable-certgen		*
- *   To compile:  gcc -o test getcert.c -lwolfssl			*
-=======
 # ICT2205 Assignment 1 Part II
 
 A C program which aims to:
@@ -44,8 +38,8 @@ sudo make install
 ldconfig
 ```
 Compiling the program
-* Please ensure that ```ICT2205_Code.c``` and ```ICT2205_Code.h```are in the same directory
-* '-lcrypto' is not needed if you are running wolfssl 4.6.0 and above
+* Please ensure that ```ICT2205_Code.c``` and ```ICT2205_Code.h``` are in the same directory
+* Option **-lcrypto** is not needed if you are running wolfssl 4.6.0 and above
 ```
 gcc ICT2205_Code.c -o testssl -lwolfssl -lcrypto
 ```
@@ -94,7 +88,7 @@ Modulus:
     36:9b
 Exponent: 65537 (0x10001)
 ```
-You may then proceed to interact with the website with 3 options and the response will be saved as a HTML file under /request folder
+You may then proceed to interact with the website with 3 options and the response will be saved as a HTML file under /request folder (Filename: *hostname*-*request type*-*time of request*.html)
 1. Pre-crafted GET request
    ```
    Please choose a number accordingly. Option 1 & 2 are sample requests, to prove the script is working.
@@ -146,4 +140,3 @@ In the main menu, enter 0 to exit the program
 
 ## Acknowledgments
 * WolfSSL
->>>>>>> 593ecc95b5bce414601f9a3524410749507af68c

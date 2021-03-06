@@ -18,6 +18,7 @@
 #include <time.h>
 #include "ICT2205_Code.h"
 
+// Main Program
 int main() {
     int num_option, code;
 	char option[10];
@@ -44,9 +45,10 @@ int main() {
 /* ---------------------------------------------------------- *
  * ICT2205 TeamEggFriedRice Crypto Program (Socket) 	      *
  * 0 - Function runs successful                               *
- * -1 - Function hit some error                                *
+ * -1 - Function hit some error                               *
  * ---------------------------------------------------------- */
 int program_cert(int num_option){
+	
 	// Host name to retrieve cert from
 	char website_url[5][256] = {"https://sec-consult.com", "https://www.zara.com", "https://www.tutorialspoint.com", "https://www.w3schools.com", "https://sg.linkedin.com"};
 	char           		dest_url[] = "";
@@ -59,18 +61,18 @@ int program_cert(int num_option){
 	WOLFSSL* ssl;
 	int server = 0;
 	int ret, i;
-	//Getting the URL user choosing
+	
+	// Getting the URL user choosing
 	strncpy(dest_url, website_url[num_option-1], sizeof(website_url[num_option-1]));
 	char* menu_cho = strdup(retr_menu(num_option-1));
-	// printf("%s\t\t\t\t%s\n", dest_url, menu_cho); //Commented out by KK
-	// printf("%s\n",dest_url); //Commented out by KK
+
 	/* ---------------------------------------------------------- *
 	 * Create the Input/Output BIO's.                             *
 	 * ---------------------------------------------------------- */
 	certbio = BIO_new(BIO_s_file());
 	outbio  = BIO_new_fp(stdout, BIO_NOCLOSE);
 
-	// initialize wolfssl library
+	// Initialize wolfssl library
 	if(wolfSSL_Init() < 0){
 		BIO_printf(outbio, "Could not initialize the OpenSSL library !\n");
         return -1;
@@ -174,11 +176,9 @@ int program_cert(int num_option){
 		return -1;
 	}
 
-	
+
   	wolfSSL_RSA_print(outbio, rsa, 0);
 
-  	// Write in PEM format to BIO
-	//PEM_write_bio_PUBKEY(outbio, pkey);
 	/* ---------------------------------------------------------- *
 	 * Sending request to the server 							  *
 	 * ---------------------------------------------------------- */
@@ -211,6 +211,9 @@ int program_cert(int num_option){
 		return(0);
 }
 
+/* ---------------------------------------------------------- *
+ * Process GET or POST request and save it to 'request' folder*
+ * ---------------------------------------------------------- */
 int process_request(int n, char* target, WOLFSSL* ssl){
 	struct stat st = {0};
 	FILE *fp;
@@ -218,6 +221,7 @@ int process_request(int n, char* target, WOLFSSL* ssl){
 	char* hn = "";
 	char fn[1000];
 	char reponse[16384];
+	char request_code[3][10] = {"GET", "POST", "CUSTOM"};
 
 	printf("---Crafting request---\n");
 	char* buff = retr_request(n,target);
@@ -240,7 +244,7 @@ int process_request(int n, char* target, WOLFSSL* ssl){
 	printf("%s","---Receving request (Writing to file)---\n");
     // Store certificate into PEM file
     hn = strdup(strstr(target, "://")+3);
-    sprintf(fn, "request/%s-%ld.html", hn,seconds);
+    sprintf(fn, "request/%s-%s-%ld.html", hn, request_code[n-1], seconds);
     fp = fopen (fn, "a");
 	while(TRUE){
 		memset(reponse, 0, sizeof(reponse));
@@ -256,6 +260,9 @@ int process_request(int n, char* target, WOLFSSL* ssl){
 	return 0;
 }
 
+/* ---------------------------------------------------------- *
+ * Process user customised GET or POST request			 	  *
+ * ---------------------------------------------------------- */
 char* custom_request(){
 	char buff[16834];
 	memset(buff,0,sizeof(buff));
@@ -270,9 +277,12 @@ char* custom_request(){
 	return buff2;
 }
 
+/* ---------------------------------------------------------- *
+ * Return the pre-crafted request						 	  *
+ * ---------------------------------------------------------- */
 char* retr_request(int n, char* target){
 	char* buff;
-  buff = malloc(sizeof(char) * 16384); // Comment out this if you have segmentation fault
+	buff = malloc(sizeof(char) * 16384); //Added this due to segmentation fault
 	strcpy(buff, "");
 	if(n == 3){
 		buff = custom_request();
@@ -319,7 +329,6 @@ char* retr_menu(int n){
 	}
 }
 
-
 /* ---------------------------------------------------------- *
  * Concat char pointer to char at the end					  *
  * ---------------------------------------------------------- */
@@ -328,7 +337,6 @@ void catchar(char* main, char c){
         main[len] = c;
         main[len+1] = '\0';
 }
-
 
 /* ---------------------------------------------------------- *
  * Converting \\r\\n to char \r\n							  *
@@ -353,7 +361,6 @@ char* replace_newline(char* buff){
 	return a;
 }
 
-
 /* ---------------------------------------------------------- *
  * Free structures 							 				  *
  * ---------------------------------------------------------- */
@@ -366,66 +373,63 @@ int free_structures(WOLFSSL* ssl, int server, WOLFSSL_X509* servercert, WOLFSSL_
     return 0;
 }
 
-
 /* ---------------------------------------------------------- *
  * Creates the socket & TCP-connect to server 				  *
  * ---------------------------------------------------------- */
 int create_socket(char url_str[], BIO *out) {
-  int sockfd;
-  char hostname[256] = "";
-  char    portnum[6] = "443";
-  char      proto[6] = "";
-  char      *tmp_ptr = NULL;
-  int           port;
-  struct hostent *host;
-  struct sockaddr_in dest_addr;
+	int sockfd;
+	char hostname[256] = "";
+	char    portnum[6] = "443";
+	char      proto[6] = "";
+	char      *tmp_ptr = NULL;
+	int           port;
+	struct hostent *host;
+	struct sockaddr_in dest_addr;
 
-  // Remove / from url_string
-  if(url_str[strlen(url_str)] == '/')
-    url_str[strlen(url_str)] = '\0';
+	// Remove / from url_string
+	if(url_str[strlen(url_str)] == '/')
+	url_str[strlen(url_str)] = '\0';
 
-  // Get protocol (i.e. http)
-  strncpy(proto, url_str, (strchr(url_str, ':')-url_str));
+	// Get protocol (i.e. http)
+	strncpy(proto, url_str, (strchr(url_str, ':')-url_str));
 
-  // Get hostname after ://
-  strncpy(hostname, strstr(url_str, "://")+3, sizeof(hostname));
+	// Get hostname after ://
+	strncpy(hostname, strstr(url_str, "://")+3, sizeof(hostname));
 
-  // If hostname has colon
-  if(strchr(hostname, ':')) {
-    tmp_ptr = strchr(hostname, ':');
-    // Last : is the start of port number
-    strncpy(portnum, tmp_ptr+1,  sizeof(portnum));
-    *tmp_ptr = '\0';
-  }
+	// If hostname has colon
+	if(strchr(hostname, ':')) {
+		tmp_ptr = strchr(hostname, ':');
+		// Last : is the start of port number
+		strncpy(portnum, tmp_ptr+1,  sizeof(portnum));
+		*tmp_ptr = '\0';
+	}
 
-  port = atoi(portnum);
+	port = atoi(portnum);
 
-  // Perform lookup on hostname
-  if ( (host = gethostbyname(hostname)) == NULL ) {
-    BIO_printf(out, "Error: Cannot resolve hostname %s.\n",  hostname);
-    abort();
-  }
+	// Perform lookup on hostname
+	if ( (host = gethostbyname(hostname)) == NULL ) {
+		BIO_printf(out, "Error: Cannot resolve hostname %s.\n",  hostname);
+		abort();
+	}
 
-  /* ---------------------------------------------------------- *
-   * Create TCP socket 			                                *
-   * ---------------------------------------------------------- */
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	/* ---------------------------------------------------------- *
+	 * Create TCP socket 			                              *
+	 * ---------------------------------------------------------- */
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-  dest_addr.sin_family=AF_INET;
-  dest_addr.sin_port=htons(port);
-  dest_addr.sin_addr.s_addr = *(long*)(host->h_addr);
+	dest_addr.sin_family=AF_INET;
+	dest_addr.sin_port=htons(port);
+	dest_addr.sin_addr.s_addr = *(long*)(host->h_addr);
 
-  // Zero the rest of the struct
-  memset(&(dest_addr.sin_zero), '\0', 8);
+	// Zero the rest of the struct
+	memset(&(dest_addr.sin_zero), '\0', 8);
 
-  tmp_ptr = inet_ntoa(dest_addr.sin_addr);
+	tmp_ptr = inet_ntoa(dest_addr.sin_addr);
 
-  // Connect to host
-  if ( connect(sockfd, (struct sockaddr *) &dest_addr,
-                              sizeof(struct sockaddr)) == -1 ) {
-    BIO_printf(out, "Error: Cannot connect to host %s [%s] on port %d.\n",
-             hostname, tmp_ptr, port);
-  }
+	// Connect to host
+	if ( connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr)) == -1 ) {
+		BIO_printf(out, "Error: Cannot connect to host %s [%s] on port %d.\n", hostname, tmp_ptr, port);
+	}
 
-  return sockfd;
+	return sockfd;
 }

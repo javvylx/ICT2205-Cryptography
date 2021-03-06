@@ -183,6 +183,12 @@ int program_cert(int num_option){
 	// IF PK is RSA
 	RSA * rsa;
   	rsa = EVP_PKEY_get1_RSA(pkey);
+	if(rsa == NULL){
+		BIO_printf(outbio, "Public key is not using RSA. Exiting...");
+		return -1;
+	}
+
+	
   	wolfSSL_RSA_print(outbio, rsa, 0);
 
   	// Write in PEM format to BIO

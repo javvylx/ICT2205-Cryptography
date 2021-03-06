@@ -4,9 +4,9 @@
 #include <wolfssl/openssl/bio.h>
 #include <wolfssl/wolfcrypt/rsa.h>
 
-#define CERT_FILE_CA "./cert/USERTrustRSACertificationAuthority.pem" //Which website CA cert is this
-#define CERT_FILE_CA2 "./cert/DigiCertGlobalRootCA.pem" //Which website CA cert is  this
-#define CERT_FILE_CA3 "./cert/AmazonCA.pem" //Which website CA cert is  this
+#define CERT_FILE_CA "./cert/master-ca-cert.pem" //Which website CA cert is this
+// #define CERT_FILE_CA2 "./cert/DigiCertGlobalRootCA.pem" //Which website CA cert is  this
+// #define CERT_FILE_CA3 "./cert/AmazonCA.pem" //Which website CA cert is  this
 #define WEBSITE_MENU "Please choose a number according to the options to retrieve certificates\n1) sec-consult.com\n2) www.zara.com\n3) www.tutorialspoint.com\n4) www.w3schools.com\n5) sg.linkedin.com\n0) Exit\nOption: " //Starting menu for user
 #define SC_MENU "Please choose a number accordingly. Option 1 & 2 are sample requests, to prove the script is working.\n1) GET - Homepage\n2) POST - Search function\n3) Custom request (Manually enter request)\n0) Return to main menu\nOption: "
 #define ZARA_MENU "Please choose a number accordingly. Option 1 & 2 are sample requests, to prove the script is working.\n1) GET - Homepage\n2) POST - Add Cart function\n3) Custom request (Manually enter request)\n0) Return to main menu\nOption: "

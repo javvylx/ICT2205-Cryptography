@@ -109,20 +109,6 @@ int program_cert(int num_option){
         return -1;
     }
 
-	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_CA2, NULL)
-        != SSL_SUCCESS) {
-        fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
-                CERT_FILE_CA2);
-        return -1;
-    }
-
-	if (wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE_CA3, NULL)
-        != SSL_SUCCESS) {
-        fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
-                CERT_FILE_CA3);
-        return -1;
-    }
-
 	/* ---------------------------------------------------------- *
 	 * Create new wolfSSL connection state object                 *
 	 * ---------------------------------------------------------- */

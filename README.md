@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+# ict2205-crypto
+
+ *   ./configure  --enable-opensslextra --enable-certgen		*
+ *   To compile:  gcc -o test getcert.c -lwolfssl			*
+=======
 # ICT2205 Assignment 1 Part II
 
 A C program which aims to:
@@ -140,3 +146,4 @@ In the main menu, enter 0 to exit the program
 
 ## Acknowledgments
 * WolfSSL
+>>>>>>> 593ecc95b5bce414601f9a3524410749507af68c

@@ -20,8 +20,8 @@
 
 // Main Program
 int main() {
-    int num_option, code;
-	char option[10];
+  int num_option, code;
+	char option[10], url[256];
 	num_option = 10;
 	code = 1;
 
@@ -33,8 +33,15 @@ int main() {
 		if (num_option==0){
 			exit(0);
 		}
+    if (num_option==6) {
+      printf(USER_MENU);
+  		fgets(url, sizeof(url), stdin);
+  		sscanf(url,"%s", url);
+  		fflush(stdin);
+      code = program_cert(num_option, url);
+    }
 		if (num_option < 6) {
-			code = program_cert(num_option);
+			code = program_cert(num_option, " ");
 		}
 	}
 	exit(1);
@@ -47,8 +54,8 @@ int main() {
  * 0 - Function runs successful                               *
  * -1 - Function hit some error                               *
  * ---------------------------------------------------------- */
-int program_cert(int num_option){
-	
+int program_cert(int num_option, char* user_url){
+
 	// Host name to retrieve cert from
 	char website_url[5][256] = {"https://sec-consult.com", "https://www.zara.com", "https://www.tutorialspoint.com", "https://www.w3schools.com", "https://sg.linkedin.com"};
 	char           		dest_url[] = "";
@@ -61,10 +68,14 @@ int program_cert(int num_option){
 	WOLFSSL* ssl;
 	int server = 0;
 	int ret, i;
-	
+
 	// Getting the URL user choosing
-	strncpy(dest_url, website_url[num_option-1], sizeof(website_url[num_option-1]));
-	char* menu_cho = strdup(retr_menu(num_option-1));
+  if (num_option < 6) {
+  	strncpy(dest_url, website_url[num_option-1], sizeof(website_url[num_option-1]));
+  } else {
+    strncpy(dest_url, user_url, 256);
+  }
+  char* menu_cho = strdup(retr_menu(num_option-1));
 
 	/* ---------------------------------------------------------- *
 	 * Create the Input/Output BIO's.                             *
@@ -193,9 +204,11 @@ int program_cert(int num_option){
 		if (nu_opt==0){
 			goto cleanup;
 		}
-		if (nu_opt < 10) {
+		if (nu_opt < 10 && num_option < 6) {
 			code = process_request(nu_opt, dest_url, ssl);
-		}
+		} else if (nu_opt < 10 && num_option == 6) {
+      code = process_request(3, dest_url, ssl);
+    }
 	}
 
 	/* ---------------------------------------------------------- *
@@ -325,6 +338,7 @@ char* retr_menu(int n){
 	case 2: return TP_MENU;
 	case 3: return W3S_MENU;
 	case 4: return LI_MENU;
+  case 5: return USER_REQ;
 	default: return "Not found";
 	}
 }
@@ -391,7 +405,11 @@ int create_socket(char url_str[], BIO *out) {
 	url_str[strlen(url_str)] = '\0';
 
 	// Get protocol (i.e. http)
-	strncpy(proto, url_str, (strchr(url_str, ':')-url_str));
+  if (strncmp(url_str, "https://", 8) == 0 || strncmp(url_str, "http://", 7) == 0) {
+	   strncpy(proto, url_str, (strchr(url_str, ':')-url_str));
+   } else {
+     return -1;
+   }
 
 	// Get hostname after ://
 	strncpy(hostname, strstr(url_str, "://")+3, sizeof(hostname));
@@ -409,7 +427,7 @@ int create_socket(char url_str[], BIO *out) {
 	// Perform lookup on hostname
 	if ( (host = gethostbyname(hostname)) == NULL ) {
 		BIO_printf(out, "Error: Cannot resolve hostname %s.\n",  hostname);
-		abort();
+		return -1;
 	}
 
 	/* ---------------------------------------------------------- *

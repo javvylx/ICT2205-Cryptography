@@ -57,6 +57,7 @@ Please choose a number according to the options to retrieve certificates
 3) www.tutorialspoint.com
 4) www.w3schools.com
 5) sg.linkedin.com
+6) Custom URL
 0) Exit
 Option: 4
 ```
@@ -126,6 +127,54 @@ You may then proceed to interact with the website with 3 options and the respons
    ---Sending request---
    ---Receving request (Writing to file)---
    ```
+
+Websites that are not part of the 5 options can be tested as well.
+```
+Please choose a number according to the options to retrieve certificates
+1) sec-consult.com
+2) www.zara.com
+3) www.tutorialspoint.com
+4) www.w3schools.com
+5) sg.linkedin.com
+6) Custom URL
+0) Exit
+Option: 6
+Please type in your website url with the protocol in the front (eg. https://www.google.com): https://www.google.com
+Successfully made the TCP connection to: https://www.google.com.
+Successfully enabled SSL/TLS session to: https://www.google.com.
+Retrieved the server's certificate from: https://www.google.com.
+
+RSA Private-Key: (2048 bit)
+Modulus:
+    00:8e:7a:8b:77:2b:72:a8:1c:93:c6:85:0b:0e:80:
+    08:55:52:a9:c4:2e:c4:a8:31:07:ae:a1:a2:e3:20:
+    7a:ff:8f:df:92:fe:3a:05:c4:93:d9:70:5d:54:49:
+    b1:73:46:be:57:a3:c6:2e:24:af:29:24:1c:cd:c0:
+    6a:f0:58:55:85:9f:cd:a8:03:6d:df:76:61:67:fa:
+    cc:dd:07:95:65:72:51:e4:90:15:f9:b8:dd:2a:20:
+    d8:f4:19:97:c3:c4:5e:62:7c:31:48:dd:4d:1a:53:
+    50:15:fb:a2:db:29:f5:95:f9:88:c7:63:ba:2b:fc:
+    27:a3:1c:3e:71:4a:ee:31:38:f1:00:6e:83:b8:1c:
+    7d:e3:d3:fe:04:ba:f5:e7:9c:2f:a7:43:e5:a6:5c:
+    84:92:bc:0b:0e:d5:86:16:4f:de:f9:cf:e9:5a:a0:
+    20:67:0d:6b:55:2e:80:88:2a:78:7e:df:e6:5b:fb:
+    5a:bd:3d:7e:8b:c3:6a:e0:37:6e:e7:d7:19:97:32:
+    64:90:69:3c:23:99:b2:32:78:74:6f:28:f8:bd:5f:
+    cd:48:2e:8a:67:a9:8b:f5:00:3f:6e:15:1d:e0:77:
+    b2:a3:1d:0b:d4:97:ed:71:1f:3f:9b:20:f0:07:af:
+    9e:5b:50:0c:e7:8f:dc:58:0a:ba:10:29:b6:c6:72:
+    ce:41
+Exponent: 65537 (0x10001)
+Please choose a number accordingly.
+1) Send custom request.
+0) Return to main menu
+Option: 1
+---Crafting request---                        
+Message for server: GET / HTTP/1.1\r\nHost: www.google.com\r\n\r\n     
+---Sending request---                         
+---Receving request (Writing to file)---
+```
+
 When the SSL/TLS socket is established, enter 0 to end the socket and return to the main menu
 In the main menu, enter 0 to exit the program
 
